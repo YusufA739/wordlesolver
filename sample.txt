@@ -1,0 +1,3 @@
+put green as s p a s then run
+put prefixConcurrent as spas and run
+You'll notice the same output achieved in different ways. This is because it brute forces combos then narrows down for s p a s
