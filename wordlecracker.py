@@ -37,10 +37,10 @@ else: #brute force the list of all chars, then only save to memory those words t
             possible_combos.append(str(beginningPartial+candidate))
     #generate all possible combos
 
-yellow_letters=['k'] #if you have no words, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
-green_letters=['s','i','r']
-gray_letters=['f','h','o','n','t','z','l'] #confirmed gray letters, from previous guesses
-green_letter_positions=[0,2,3]
+yellow_letters=[] #if you have no words, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
+green_letters=['a','n','e']
+gray_letters=['f','r','o','t','i'] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE)
+green_letter_positions=[2,3,4]
 aac=[] #stands for all actual combinations
 for word in possible_combos:
     match = False
