@@ -42,35 +42,43 @@ else: #brute force the list of all chars, then only save to memory those words t
     #generate all possible combos
 
 yellow_letters=[] #if you have no words, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
-green_letters=["w","a","e","x"]
-gray_letters=["r","s","c","z","m","i","t"] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE -> if a word has e in it, whether it be yellow or green, do not store the second e - for duplicates - in here)
+green_letters=["w","a","e","x"] #eventually merge with green_letter_positions ??
+gray_letters=["s","r","c","z","m","i","t"] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE -> if a word has e in it, whether it be yellow or green, do not store the second e - for duplicates - in here)
 green_letter_positions=[0,1,3,2]#NOTE: uses index 0 as first positon. Standard coding indexing means consistent
 aac=[] #stands for all actual combinations
 for word in possible_combos:
-    match = False
+    skipFullWord = False #only reset at the start of a new word check
     yellowsPresent = 0
     greensPresent = 0
     letterIndex = 0
-    tempYellows = [] # prevents a letter in yellow and green from making both valid
-    tempGreens = []
     for letter in word:
-        if letter in gray_letters: #immediately stop. This word will not be the one (contains a known gray, which means it cannot be word, grays are wrong)
-            break
-        greenMatch = False
-        letterCount = word.count(letter)
-        tempYellowsLetterCount = tempYellows.count(letter)
-        for greenIndex in range(len(green_letters)):
-            if green_letters[greenIndex] == letter and green_letter_positions[greenIndex] == letterIndex: #if the letter is in green_letters
-                # and the corresponding position pair index matches the current letterIndex, then we should increment
-                greensPresent += 1
-                greenMatch = True
+        if letter not in gray_letters: #only execute if no gray letters
+            greenMatch = False
+            #check if it is a green in the right place
+            for greenIndex in range(len(green_letters)):
+                if green_letters[greenIndex] == letter and green_letter_positions[greenIndex] == letterIndex: #if the letter is in green_letters
+                    # and the corresponding position pair index matches the current letterIndex, then we should increment
+                    greensPresent += 1
+                    greenMatch = True
 
-        if (not greenMatch) and (letter in yellow_letters) and (tempYellowsLetterCount < letterCount): #if letter is in yellow_letters, and we haven't reached yellow limit
-            yellowsPresent += 1
+            #otherwise, check if it is present in yellow letter list
+            if (not greenMatch) and (letter in yellow_letters): #if letter is in yellow_letters, and we haven't reached yellow limit
+                yellowsPresent += 1
+
+        else:
+            skipFullWord = True#only changed to True once in the word checking, can never be set to False during loop. Will stay True until loop starts again for a new word
+
+        #increm letterIndex tracker (so we can use it for green_letter_positions list
         letterIndex += 1
 
-    if greensPresent == len(green_letters) and yellowsPresent == len(yellow_letters):
+    if (  greensPresent >= len(green_letters) and yellowsPresent >= len(yellow_letters)  ) and (  not skipFullWord  ):#if the counts match up (old valid logic but missing a check for gray)
+        #... and there is not a True skipFullWord signal
+        print(greensPresent, yellowsPresent)
+        print(word)
         aac.append(word)
+
+
+
 
 with open("aac.txt","w") as f:
     for word in aac:
