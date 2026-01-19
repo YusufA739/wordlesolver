@@ -41,10 +41,10 @@ else: #brute force the list of all chars, then only save to memory those words t
             possible_combos.append(str(beginningPartial+candidate))
     #generate all possible combos
 
-yellow_letters=["c","a"] #if you have no words, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
-green_letters=[]
-gray_letters=["r","n","e"] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE -> if a word has e in it, whether it be yellow or green, do not store the second e - for duplicates - in here)
-green_letter_positions=[]#NOTE: uses index 0 as first positon. Standard coding indexing means consistent
+yellow_letters=[] #if you have no words, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
+green_letters=["w","a","e","x"]
+gray_letters=["r","s","c","z","m","i","t"] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE -> if a word has e in it, whether it be yellow or green, do not store the second e - for duplicates - in here)
+green_letter_positions=[0,1,3,2]#NOTE: uses index 0 as first positon. Standard coding indexing means consistent
 aac=[] #stands for all actual combinations
 for word in possible_combos:
     match = False
