@@ -1,5 +1,7 @@
 import itertools,string,enchant
 
+from wordlesolver.wordlehelper import yellow_letters
+
 # Define all characters to use in the password
 chars = string.ascii_lowercase
 
@@ -41,9 +43,11 @@ else: #brute force the list of all chars, then only save to memory those words t
             possible_combos.append(str(beginningPartial+candidate))
     #generate all possible combos
 
-yellow_letters=[] #if you have no words, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
-green_letters=["w","a","e","x"] #eventually merge with green_letter_positions ??
-gray_letters=["s","r","c","z","m","i","t"] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE -> if a word has e in it, whether it be yellow or green, do not store the second e - for duplicates - in here)
+with open("greenletters.txt","w") as g, open("yellowletters.txt","w") as y, open("grayletters.txt","w") as g:
+    yellow_letters = y.readline().strip("\n").split(",")
+    green_letters = g.readline().strip("\n").split(",")
+    gray_letters = g.readline().strip("\n").split(",")
+
 green_letter_positions=[0,1,3,2]#NOTE: uses index 0 as first positon. Standard coding indexing means consistent
 aac=[] #stands for all actual combinations
 for word in possible_combos:
