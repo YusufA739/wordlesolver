@@ -1,4 +1,15 @@
-import itertools,string,enchant
+import itertools,string,enchant,math
+
+def remove1D(list1, target):#removes target elem, in a given 1D list/array
+    new_list = []
+    for carrier in list1:
+        if carrier == target:
+            pass
+        else:
+            new_list.append(carrier)
+    return new_list
+
+
 
 # Define all characters to use in the password
 chars = string.ascii_lowercase
@@ -19,7 +30,7 @@ with open("everywordleword.txt","r") as f:
     f.close()
 
 # preloadedCombos = itertools.combinations(data,len(data)) idk check it out later, never done it like this
-if len(preloadedCombos) > 0:
+if len(preloadedCombos) >= math.pow(5,5):
     for carrier in range(len(preloadedCombos)):
         if preloadedCombos[carrier][:len(beginningPartial)] == beginningPartial: #list[wordNo][string_index] is basically subStringing it (thanks, Chang-Qi)
             #what it does is choose the word from the list so list1 = ["hello", "my", "name", "is", "Yusuf"] and basically first is choosing the word - understandable
@@ -41,11 +52,133 @@ else: #brute force the list of all chars, then only save to memory those words t
             possible_combos.append(str(beginningPartial+candidate))
     #generate all possible combos
 
-yellow_letters=["a","t"] #if you have no words, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
-green_letters=[] #eventually merge with green_letter_positions ??
-gray_letters=["c","r","n","e","y","w","p","s","v","i","l"] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE -> if a word has e in it, whether it be yellow or green, do not store the second e - for duplicates - in here)
-green_letter_positions=[3,4]#NOTE: uses index 0 as first positon. Standard coding indexing means consistent
-yellow_letter_positions_anti=[[1],[2]]
+if input("type Y for quick readme, or any input to continue:").lower() == "y":
+    print("""For general use, and to avoid confusion, letter positions start at 1 and end at 5.\n\nFor example, the word 'Hello' would have 'H' at position 1 and 'O' at position 5.
+    Letters for inputs and numbers for green letters positions can be comma separated, however, this is unnecessary.
+    
+    Yellow positions, however, will need to be separated by commas, but only between letters.
+    For example, if a letter is not in position 3 (yellow letter shows the word is not at this position) then we do 3 for the input, and in the order of how we typed it.
+    
+    Enter yellow letters: y,t
+    Enter anti positions: 2345,123
+    
+    This will then be encoded as:
+    [[2,3,4,5],[1,2,3]]
+    
+    Only yellow letters have this added complexity. Green letters can be written as is, in order, and will code as so:
+    
+    Enter green letters: a,b
+    Enter positions: 15
+    
+    This will then be encoded as:
+    [1,5]
+    
+    This will tell the program that there is an 'a' at the beginning and a 'b' at the end of the word
+    Case does not matter. All words are put into lowercase. Inputs are processed immediately and lowered into lowercase#
+    All inputs need to be put in order of the letters given. This only matters for green and yellow letters
+    """)
+
+yellow_letters_input = input("Enter yellow letters (comma separated): ").lower()
+
+yellow_letter_positions_anti_input = input("Enter yellow letter anti positions (comma separated): ").lower()
+
+green_letters_input = input("Enter green letters (comma separated): ").lower()
+
+green_letter_positions_input = input("Enter green letter positions (comma separated): ").lower()
+
+gray_letters_input = input("Enter gray letters (comma separated): ").lower()
+
+if yellow_letters_input != "":
+    yellow_letters = list(yellow_letters_input)
+    yellow_letters = remove1D(yellow_letters,",")
+
+else:
+    yellow_letters = []
+
+if yellow_letter_positions_anti_input != "":#the variable names make more sense to me as is, compared to real names. It works, so I am leaving as is for now until testing is
+    # #complete, which upon that time, I will change the variable names to traditional variable names instead of names shown
+    # #disassemble, subtract 1 from all numbers
+    # temp_list = list(yellow_letter_positions_anti_input)
+    # indexPointer = 0
+    # for letter in temp_list:
+    #     try:
+    #         temp = int(letter)
+    #         temp -= 1
+    #         temp_list[indexPointer] = str(temp)#cast back to string after modifications
+    #     except:
+    #         pass
+    #     indexPointer += 1
+    # #reassemble input
+    # yellow_letter_positions_anti_input_MODIFIED = ""
+    # for letter in temp_list:
+    #     yellow_letter_positions_anti_input_MODIFIED += letter
+    # print(yellow_letter_positions_anti_input_MODIFIED)
+
+    #skip this whole process for improved method; less lines
+    yellow_letter_positions_anti_input_MODIFIED = yellow_letter_positions_anti_input
+#NOW continue operations on input as normal, ON MODIFIED DATA, OTHERWISE THE EFFORT AND LENGTHS TAKEN TO MODIFY ARE USELESS IF WE DON'T USE THIS NEW DATA
+    list1 = yellow_letter_positions_anti_input_MODIFIED.split(",")
+    # print(list1)
+    list2 = []
+    for entry in list1:
+        list2.append(list(entry))
+    # print(list2)
+
+    outerIndex = 0
+    innerIndex = 0
+    for current_list in list2:
+        for element in current_list:
+            # print(element)
+            list2[outerIndex][innerIndex] = int(element) - 1
+            innerIndex += 1
+        outerIndex += 1
+        innerIndex = 0
+    # print(list2)
+    yellow_letter_positions_anti = list2
+else:
+    yellow_letter_positions_anti = []
+
+if green_letters_input != "":
+    green_letters = list(green_letters_input)
+    green_letters = remove1D(green_letters,",")
+
+else:
+    green_letters = []
+
+if green_letter_positions_input != "":
+    green_letter_positions = list(green_letter_positions_input)
+    green_letter_positions = remove1D(green_letter_positions,",")
+
+    indexPointer = 0
+    for element in green_letter_positions:
+        green_letter_positions[indexPointer] = int(element) - 1#normalise to 0 index (I then post-applied this strategy to yellow index stuff, to reduce lines by like a dozen or two)
+        indexPointer += 1
+else:
+    green_letter_positions = []
+
+if gray_letters_input != "":
+    gray_letters = list(gray_letters_input)
+    gray_letters = remove1D(gray_letters,",")
+    for letter in green_letters:#auto remove accidental green letters added to gray input
+        gray_letters = remove1D(gray_letters,letter)
+    for letter in yellow_letters:#auto remove accidental green letters added to gray input
+        gray_letters = remove1D(gray_letters,letter)
+
+    print(gray_letters)
+else:
+    gray_letters = []
+
+defaultsOrUserInput = input("Use defaults? Default is (N) (Y/N)").lower()
+
+if defaultsOrUserInput == "y":
+    #I could add error checks for null string entries "" but I won't as I am the only one who uses this
+    yellow_letters=["a"] #if you have no letters for any of these lists, don't just remove the character, delete the null string entry -> "" (do not just backspace the letters out)
+    green_letters=["i"] #eventually merge with green_letter_positions ??
+    gray_letters=["c","r","e","n","p","o","l","o"] #confirmed gray letters, from previous guesses (DO NOT STORE DUPLICATES HERE -> if a word has e in it, whether it be yellow or green, do not store the second e - for duplicates - in here)
+    green_letter_positions=[3]#NOTE: uses index 0 as first positon. Standard coding indexing means consistent
+    yellow_letter_positions_anti=[[2]]
+
+
 aac=[] #stands for all actual combinations
 for word in possible_combos:
     skipFullWord = False #only reset at the start of a new word check
@@ -75,17 +208,21 @@ for word in possible_combos:
                 yellow_position_in_yellow_letters = yellow_letters.index(letter)
                 if letterIndex not in yellow_letter_positions_anti[yellow_position_in_yellow_letters]:
                     yellowsPresent += 1
-                    yellowMatch = True
-                    if letter not in tempYellows:
-                        tempYellows.append(letter)#add it. We have to use if statement to weed out duplicates
+                    yellowMatch = True#not used, but could be, so it is added as to reflect the same functionality as greenMatch green letters can have
+                    # if letter not in tempYellows:#commented out to allow for multiple yellow letters of the same letter (lease, giving two e's as yellow. Now, we can track
+                    #and validate it as not skipping it, as the count in yellowPresent below after the loop will now no longer skip a valid word)
+                    tempYellows.append(letter)#add it. We have to use if statement to weed out duplicates
                 else:
                     skipFullWord = True#I would rather skip the full word, because it's clearly wrong (yellow in the yellow place, duh)
 
-        #yellow cancel save if not at least one of all yellows present in word
-        #note: no reason to green check as if it doesn't meet count then it means not all greens are there. Yellows can have duplicates (Wait, so can greens)
-        if not skipFullWord:
-            if len(tempYellows) < len(yellow_letters) and len(tempGreens) < len(green_letters):
-                skipFullWord = True
+#this block does not work; it short circuits the word before proper evaluation can be done
+        # #yellow cancel save if not at least one of all yellows present in word
+        # #note: no reason to green check as if it doesn't meet count then it means not all greens are there. Yellows can have duplicates (Wait, so can greens)
+        # if not skipFullWord:#what this basically does is check yellow and green for some reason and it flops because its inside the loop
+        #I just realised. Because it says if instead of elif, it runs no matter even if the letter isn't in grey letters. It basically needs to be elif to work. Oops
+        #I mean, even then, its useless to have, because if we see a grey we should skipFullWord, which is literally what the else below does, so we only need that to cover all bases
+        #     if len(tempYellows) < len(yellow_letters) and len(tempGreens) < len(green_letters):
+        #         skipFullWord = True
 
         else:
             skipFullWord = True#only changed to True once in the word checking, can never be set to False during loop. Will stay True until loop starts again for a new word

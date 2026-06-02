@@ -4,7 +4,7 @@ dictionary=enchant.Dict("en_US") #wordle is from the NY times. NY is in the US â
 
 for combination in itertools.product(string.ascii_lowercase,repeat=5):
     word = "".join(combination)
-    if dictionary.check(word):
+    if dictionary.check(word):#checks if the word is also actually real (cuts down comparisons by A LOT)
         words.append(word)
 with open("wordlegen.txt","w") as f:
     for carrier in words:
