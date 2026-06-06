@@ -159,6 +159,8 @@ else:
 if gray_letters_input != "":
     gray_letters = list(gray_letters_input)
     gray_letters = remove1D(gray_letters,",")
+    gray_letters = remove1D(gray_letters, " ")#I realised I can now just type the words and because of this, I keep pressing space, as to type normally and put spaces
+    #in between ers the words
     for letter in green_letters:#auto remove accidental green letters added to gray input
         gray_letters = remove1D(gray_letters,letter)
     for letter in yellow_letters:#auto remove accidental green letters added to gray input
