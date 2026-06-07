@@ -12,54 +12,58 @@ def hangmanmain(word):
     # main program
     # print("Chose and option: Start the game (A), Add a new word (B), Exit (C)")
     # choice = input(": ")
-    lives = 15
+    greenfile = open("greenletters.txt","a")
+    yellowfile = open("yellowletters.txt","a")
+    grayfile = open("grayletters.txt","a")
+    lives = 5
     score = 0
     guesses = []
+    greenletters = []
+    yellowletters = []
+    grayletters = []
+    greenPos = []
+    yellowAntiPos = []
     numbers = ['0', '2', '3', '4', '5', '6', '7', '8', '9']
 
-    cypher = ["_"] * len(word)
+    cipher = ["_"] * len(word)
     print("the word has", len(word), "characters")
 
     while lives >= 0:  # similar to pacman coin system
-        word = input("Input a word or the word or type 1 to quit:")
+        userInput = input("Input a word or the word or type 1 to quit:")
 
-        if word == '1':  # quit game
+        if userInput == '1':  # quit game
             return (-9999999999)
 
-        if word == '2934':
-            print("DEBUG MODE: SKIP WORD")
+        if userInput == '2':
+            print("Word Skipped")
             lives = -1
 
         numbersPresent = False
-        for carrier in word:
+        for carrier in userInput:
             if carrier in numbers:
                 numbersPresent = True
                 break
 
-        if word == "":
+        if userInput == "":
             continue
-        elif word in guesses:
+        elif userInput in guesses:
             print("The word was already guessed")
         elif numbersPresent:
             print("Numbers present in guess...")
-        else:
-            guesses.append(word)
+        elif len(word) == 5:
+            guesses.append(userInput)
             lives -= 1
-            if len(word) == 1:
-                # print(cypher) old cypher is displayed to compare against new one, but it clutters screen too much imo
-                for carrier in range(len(word)):
-                    if word[carrier] == word:
-                        score += 10  # no need to check for repeated inputs that force more points. This is because of prerequisite check of 'if word in guesses:'
-                        cypher[carrier] = word
+            for carrier in range(5):
+                if userInput[carrier] == word[carrier]:
+                    score += 10  # no need to check for repeated inputs that force more points. This is because of prerequisite check of 'if word in guesses:'
+                    cipher[carrier] = word
+                    greenletters.append(userInput[carrier])
+                    greenPos.append(userInput[carrier])
 
-                print(cypher)  # print new cypher only
+            print(cipher)  # print new cipher only
 
-            elif len(word) > 1:
-                if word == word:
-                    print(word.split(""))  # quickly display the list without doing any cypher iteration
-                    score = score + 100  # rebalance 50->100
-                else:
-                    print(cypher)
+        else:
+            print("word does not have enough letters")
 
     print("The word was", str(word))
     print(score)
