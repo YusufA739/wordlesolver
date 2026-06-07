@@ -54,43 +54,63 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
                 possible_combos.append(str(beginningPartial+candidate))
         #generate all possible combos
 
-    if input("type Y for quick readme, or any input to continue:").lower() == "y":
-        print("""For general use, and to avoid confusion, letter positions start at 1 and end at 5.\n\nFor example, the word 'Hello' would have 'H' at position 1 and 'O' at position 5.
-        Letters for inputs and numbers for green letters positions can be comma separated, however, this is unnecessary.
-        
-        Yellow positions, however, will need to be separated by commas, but only between letters.
-        For example, if a letter is not in position 3 (yellow letter shows the word is not at this position) then we do 3 for the input, and in the order of how we typed it.
-        
-        Enter yellow letters: y,t
-        Enter anti positions: 2345,123
-        
-        This will then be encoded as:
-        [[2,3,4,5],[1,2,3]]
-        
-        Only yellow letters have this added complexity. Green letters can be written as is, in order, and will code as so:
-        
-        Enter green letters: a,b
-        Enter positions: 15
-        
-        This will then be encoded as:
-        [1,5]
-        
-        This will tell the program that there is an 'a' at the beginning and a 'b' at the end of the word
-        Case does not matter. All words are put into lowercase. Inputs are processed immediately and lowered into lowercase#
-        All inputs need to be put in order of the letters given. This only matters for green and yellow letters
-        """)
+#here to avoid ref before assignment (different flows could prevent creation, for exmaple, if called externally, the below if won't run and create the 5 vars
+    yellow_letters_input = ""
+    yellow_letter_positions_anti_input = ""
+    green_letters_input = ""
+    green_letter_positions_input = ""
+    gray_letters_input = ""
 
-    yellow_letters_input = input("Enter yellow letters (comma separated): ").lower()
+    if yellowExternalBypass == None and yellowAntiPosExternalBypass == None and greenExternalBypass == None and greenPosExternalBypass == None and grayExternalBypass == None:
 
-    yellow_letter_positions_anti_input = input("Enter yellow letter anti positions (comma separated): ").lower()
+        if input("type Y for quick readme, or any input to continue:").lower() == "y":
+            input("""For general use, and to avoid confusion, letter positions start at 1 and end at 5.\n\nFor example, the word 'Hello' would have 'H' at position 1 and 'O' at position 5.
+            Letters for inputs and numbers for green letters positions can be comma separated, however, this is unnecessary.
+            
+            Yellow positions, however, will need to be separated by commas, but only between letters.
+            For example, if a letter is not in position 3 (yellow letter shows the word is not at this position) then we do 3 for the input, and in the order of how we typed it.
+            
+            Enter yellow letters: y,t
+            Enter anti positions: 2345,123
+            
+            This will then be encoded as:
+            [[2,3,4,5],[1,2,3]]
+            
+            Only yellow letters have this added complexity. Green letters can be written as is, in order, and will code as so:
+            
+            Enter green letters: a,b
+            Enter positions: 15
+            
+            This will then be encoded as:
+            [1,5]
+            
+            This will tell the program that there is an 'a' at the beginning and a 'b' at the end of the word
+            Case does not matter. All words are put into lowercase. Inputs are processed immediately and lowered into lowercase#
+            All inputs need to be put in order of the letters given. This only matters for green and yellow letters
+            
+            Press enter.
+            """)
+            input("""Example Inputs:
+            Enter yellow letters: e,y,m
+            Enter anti positions: 2345,1234,1345
+            Enter green letters: e,r
+            Enter positions: 3,4
+            
+            Press enter to start program
+            
+            """)
 
-    green_letters_input = input("Enter green letters (comma separated): ").lower()
+        yellow_letters_input = input("Enter yellow letters (comma separated): ").lower()
 
-    green_letter_positions_input = input("Enter green letter positions (comma separated): ").lower()
+        yellow_letter_positions_anti_input = input("Enter yellow letter anti positions (comma separated): ").lower()
 
-    gray_letters_input = input("Enter gray letters (comma separated): ").lower()
+        green_letters_input = input("Enter green letters (comma separated): ").lower()
 
-#switch to external inputs, if given
+        green_letter_positions_input = input("Enter green letter positions (comma separated): ").lower()
+
+        gray_letters_input = input("Enter gray letters (comma separated): ").lower()
+
+#switch to external inputs, if given and CHECK INDIVIDUALLY INSTEAD OF DOING ELSE AND COMBINING WITH ABOVE NONE x 5 AND
     if yellowExternalBypass != None:
         yellow_letters_input = yellowExternalBypass
     if yellowAntiPosExternalBypass != None:
@@ -102,6 +122,7 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
     if grayExternalBypass != None:
         gray_letters_input = grayExternalBypass
 
+#process inputs into usable data
     if yellow_letters_input != "":
         yellow_letters = list(yellow_letters_input)
         yellow_letters = remove1D(yellow_letters,",")
@@ -270,6 +291,7 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
         meaning = dictionary.check(carrier)
         if meaning:
             print(carrier,"is a word")
+    return aac[len(aac)-1]
 
-if __name__ != '__main__':
+if __name__ == '__main__':
     main()

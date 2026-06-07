@@ -1,4 +1,6 @@
-import random
+import random,wordlehelper
+from collections import Counter
+
 
 def wordselect():
     with open("everywordleword.txt","r") as file:
@@ -27,9 +29,23 @@ def hangmanmain(word):
 
     cipher = ["_"] * len(word)
     print("the word has", len(word), "characters")
+    print("the word is", word)
+    wordCounts = Counter(word)
 
     while lives >= 0:  # similar to pacman coin system
-        userInput = input("Input a word or the word or type 1 to quit:")
+        for carrier in greenletters:
+            grayletters = wordlehelper.remove1D(grayletters,carrier)
+        for carrier in yellowletters:
+            grayletters = wordlehelper.remove1D(grayletters,carrier)
+        yellowString = ""
+        for group in yellowAntiPos:
+            for pos in group:
+                yellowString += str(pos)
+            yellowString += ","
+        greenstring = ""
+        for pos in greenPos:
+            greenstring += str(pos)
+        userInput = wordlehelper.main(yellowletters,yellowString,greenletters,greenstring,grayletters).lower()
 
         if userInput == '1':  # quit game
             return (-9999999999)
@@ -56,9 +72,18 @@ def hangmanmain(word):
             for carrier in range(5):
                 if userInput[carrier] == word[carrier]:
                     score += 10  # no need to check for repeated inputs that force more points. This is because of prerequisite check of 'if word in guesses:'
-                    cipher[carrier] = word
-                    greenletters.append(userInput[carrier])
-                    greenPos.append(userInput[carrier])
+                    cipher[carrier] = word[carrier]
+                    if userInput[carrier] in greenletters.append(userInput[carrier]) and wordCounts[userInput[carrier]] - greenletters.count(userInput[carrier]) > 0:
+                        greenletters.append(userInput[carrier])
+                        greenPos.append(carrier)
+                elif userInput[carrier] != word[carrier] and userInput[carrier] in word and wordCounts[userInput[carrier]] - (greenletters.count(userInput[carrier]) + yellowletters.count(userInput[carrier])) > 0:
+                    if userInput[carrier] in yellowletters:
+                        yellowAntiPos[yellowletters.index(userInput[carrier])].append(carrier)
+                    else:
+                        yellowletters.append(userInput[carrier])
+                    yellowAntiPos.append([carrier])
+                elif userInput[carrier] not in word:
+                    grayletters.append(userInput[carrier])
 
             print(cipher)  # print new cipher only
 
