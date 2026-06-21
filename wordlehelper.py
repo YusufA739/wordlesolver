@@ -1,4 +1,5 @@
 import itertools,string,enchant,math
+import tkinter
 
 def remove1D(list1, target):#removes target elem, in a given 1D list/array
     new_list = []
@@ -9,9 +10,20 @@ def remove1D(list1, target):#removes target elem, in a given 1D list/array
             new_list.append(carrier)
     return new_list
 
+def pressedEnter():
+    global yellow_letters_input, yellow_letter_positions_anti_input, green_letters_input, green_letter_positions_input, gray_letters_input, yellow_let_tk, yellow_pos_tk, green_tk, greenp_tk, gray_tk, window
+
+    yellow_letters_input = yellow_let_tk.get().strip()
+    yellow_letter_positions_anti_input = yellow_pos_tk.get().strip()
+    green_letters_input = green_tk.get().strip()
+    green_letter_positions_input = greenp_tk.get().strip()
+    gray_letters_input = gray_tk.get().strip()
+
+    window.destroy()
+
 
 def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExternalBypass=None, greenPosExternalBypass=None, grayExternalBypass=None):
-
+    global yellow_letters_input, yellow_letter_positions_anti_input, green_letters_input, green_letter_positions_input, gray_letters_input, yellow_let_tk, yellow_pos_tk, green_tk, greenp_tk, gray_tk, window
 
     # Define all characters to use in the password
     chars = string.ascii_lowercase
@@ -100,15 +112,57 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
             
             """)
 
-        yellow_letters_input = input("Enter yellow letters (comma separated): ").lower()
+#tkinter window for user inputs if not all overrides given
+        window = tkinter.Tk()
 
-        yellow_letter_positions_anti_input = input("Enter yellow letter anti positions (comma separated): ").lower()
+        yl_label = tkinter.Label(window, text="Yellow Letters")
+        yellow_let_tk = tkinter.Entry()
 
-        green_letters_input = input("Enter green letters (comma separated): ").lower()
+        ylp_label = tkinter.Label(window, text="Yellow Letter Positions")
+        yellow_pos_tk = tkinter.Entry()
 
-        green_letter_positions_input = input("Enter green letter positions (comma separated): ").lower()
+        green_label = tkinter.Label(window, text="Green Letters")
+        green_tk = tkinter.Entry()
 
-        gray_letters_input = input("Enter gray letters (comma separated): ").lower()
+        greenp_label = tkinter.Label(window, text="Green Letter Positions")
+        greenp_tk = tkinter.Entry()
+
+        gray_label = tkinter.Label(window, text="Gray Letters")
+        gray_tk = tkinter.Entry()
+
+        yl_label.pack()
+        yellow_let_tk.pack()
+
+        ylp_label.pack()
+        yellow_pos_tk.pack()
+
+        green_label.pack()
+        green_tk.pack()
+
+        greenp_label.pack()
+        greenp_tk.pack()
+
+        gray_label.pack()
+        gray_tk.pack()
+
+        btn_decrease = tkinter.Button(master=window, text="Enter", command=pressedEnter)
+        btn_decrease.pack(side=tkinter.BOTTOM, pady=10)
+        window.geometry('400x600')
+        window.lift()
+        window.attributes('-topmost', True)
+        window.after_idle(window.attributes, "-topmost", False)
+        window.mainloop()
+
+
+        # yellow_letters_input = input("Enter yellow letters (comma separated): ").lower()
+        #
+        # yellow_letter_positions_anti_input = input("Enter yellow letter anti positions (comma separated): ").lower()
+        #
+        # green_letters_input = input("Enter green letters (comma separated): ").lower()
+        #
+        # green_letter_positions_input = input("Enter green letter positions (comma separated): ").lower()
+        #
+        # gray_letters_input = input("Enter gray letters (comma separated): ").lower()
 
 #switch to external inputs, if given and CHECK INDIVIDUALLY INSTEAD OF DOING ELSE AND COMBINING WITH ABOVE NONE x 5 AND
     if yellowExternalBypass != None:
@@ -205,7 +259,8 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
     else:
         gray_letters = []
 
-    defaultsOrUserInput = input("Use defaults? Default is (N) (Y/N)").lower()
+    # defaultsOrUserInput = input("Use defaults? Default is (N) (Y/N)").lower()
+    defaultsOrUserInput = "n"#tkinter window is now up and running
 
     if defaultsOrUserInput == "y":
         #I could add error checks for null string entries "" but I won't as I am the only one who uses this
