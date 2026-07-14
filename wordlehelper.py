@@ -10,6 +10,9 @@ def remove1D(list1, target):#removes target elem, in a given 1D list/array
             new_list.append(carrier)
     return new_list
 
+def removeDuplicateElements(list1):
+    return list(dict.fromkeys(list1))
+
 def pressedEnter():
     global yellow_letters_input, yellow_letter_positions_anti_input, green_letters_input, green_letter_positions_input, gray_letters_input, yellow_let_tk, yellow_pos_tk, green_tk, greenp_tk, gray_tk, window
 
@@ -98,7 +101,10 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
             
             This will tell the program that there is an 'a' at the beginning and a 'b' at the end of the word
             Case does not matter. All words are put into lowercase. Inputs are processed immediately and lowered into lowercase#
-            All inputs need to be put in order of the letters given. This only matters for green and yellow letters
+            All inputs need to be put in order of the letters given. This only matters for green and yellow letters.
+            
+            Make sure when inputting a letter that comes up twice, input the green position then remove this index from the duplicate's yellow anti position.
+            If left with both occupying the same position, the counts for the letters will not add up and meet requirement, so the list will be incomplete
             
             Press enter.
             """)
@@ -331,6 +337,13 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
             print(word)
             aac.append(word)
 
+        # only checks for exact counts of green and yellow letters
+        elif (  greensPresent == len(green_letters) and yellowsPresent == len(yellow_letters)  ) and ( not skipFullWord  ):  # if the counts match up (old valid logic but missing a check for gray)
+            # ... and there is not a True skipFullWord signal
+            print(greensPresent, yellowsPresent)
+            print(word)
+            aac.append(word)
+
 
 
 
@@ -346,7 +359,14 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
         meaning = dictionary.check(carrier)
         if meaning:
             print(carrier,"is a word")
-    return aac[len(aac)-1]
+    try:
+        return aac[len(aac)-1]
+    except:
+        with open("aac.txt", "w") as f:
+            for word in aac:
+                f.write("no words found" + "\n")
+            f.close()
+        return "no words found"
 
 if __name__ == '__main__':
-    main()
+    print(main())
