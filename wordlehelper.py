@@ -345,12 +345,32 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
             aac.append(word)
 
 
+    removal = False
+    removeWord = []
+    for word in aac:
+        for letter in yellow_letters:
+            if letter not in word:
+                removeWord.append(word)
+                removal = True
+
+        if not removal:
+            for letter in green_letters:
+                if letter not in word:
+                    removeWord.append(word)
+
+        removal = False
 
 
-    with open("aac.txt","w") as f:
-        for word in aac:
-            f.write(word+"\n")
-        f.close()
+    removeWord = removeDuplicateElements(removeWord)
+    for carrier in removeWord:
+        print(carrier," removed")
+        aac.remove(carrier)
+
+
+    with open("aac.txt", "w") as f:
+        for word in aac:#all actual combinations
+            f.write(word + "\n")
+            f.close()
 
 
     dictionary=enchant.Dict("en_US") #wordle is from the NY times. NY is in the US ∴ en_US dict is used
@@ -360,13 +380,18 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
         if meaning:
             print(carrier,"is a word")
     try:
-        return aac[len(aac)-1]
+        # return aac[len(aac)-1]
+        return aac
     except:
         with open("aac.txt", "w") as f:
-            for word in aac:
-                f.write("no words found" + "\n")
+            f.write("no words found" + "\n")
             f.close()
         return "no words found"
 
 if __name__ == '__main__':
-    print(main())
+    allactualwords = main()#all actual words should really be called all possible words. If the program works correctly,
+    #the final word should be present in all sets of guesses from the first guess set of words to the last guess set
+    #of words.
+    print("All valid words obtained:")
+    print(allactualwords)
+    print("Guess: " + allactualwords[len(allactualwords)-1])
