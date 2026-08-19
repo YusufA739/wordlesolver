@@ -370,7 +370,7 @@ def main(yellowExternalBypass=None, yellowAntiPosExternalBypass=None, greenExter
     with open("aac.txt", "w") as f:
         for word in aac:#all actual combinations
             f.write(word + "\n")
-            f.close()
+        f.close()
 
 
     dictionary=enchant.Dict("en_US") #wordle is from the NY times. NY is in the US ∴ en_US dict is used
